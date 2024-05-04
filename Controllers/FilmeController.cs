@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using FilmesApi.Data;
-using FilmesApi.Data.DTO;
+using FilmesApi.Data.DTO.FilmeDTO;
 using FilmesApi.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -14,14 +14,12 @@ namespace FilmesApi.Controllers;
 public class FilmeController : ControllerBase
 {
   private readonly FilmeContext _context;
-  private readonly SerieContext _serieContext;
   private readonly IMapper _autoMapper;
 
-  public FilmeController(FilmeContext context, IMapper autoMapper, SerieContext serieContext)
+  public FilmeController(FilmeContext context, IMapper autoMapper)
   {
     _context = context;
     _autoMapper = autoMapper;
-    _serieContext = serieContext;
   }
 
   /// <summary>
@@ -121,6 +119,7 @@ public class FilmeController : ControllerBase
       if (!TryValidateModel(filmeParaAtualizar)) return ValidationProblem(ModelState);
 
       _autoMapper.Map(filmeParaAtualizar, filme);
+      _context.Filmes.Update(filme);
       _context.SaveChanges();
       transaction.Commit();
       return Ok(filme);
