@@ -43,7 +43,7 @@ public class CinemaController : ControllerBase
   }
 
   [HttpGet]
-  [ProducesResponseType(typeof(ReadCinemaDTO), StatusCodes.Status200OK)]
+  [ProducesResponseType(typeof(List<ReadCinemaDTO>), StatusCodes.Status200OK)]
   [ProducesResponseType(StatusCodes.Status500InternalServerError)]
   public IEnumerable<ReadCinemaDTO> RetornaCinemas()
   {
