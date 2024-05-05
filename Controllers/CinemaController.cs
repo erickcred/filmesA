@@ -49,7 +49,7 @@ public class CinemaController : ControllerBase
   public IEnumerable<ReadCinemaDTO> RetornaCinemas()
   {
     return _autoMapper.Map<List<ReadCinemaDTO>>(
-      _context.Cinemas.AsNoTracking().ToList()
+      _context.Cinemas.ToList()
       );
   }
 
@@ -59,7 +59,7 @@ public class CinemaController : ControllerBase
   [ProducesResponseType(StatusCodes.Status500InternalServerError)]
   public IActionResult RetornaCinema([FromRoute] int id)
   {
-    Cinema cinema = _context.Cinemas.AsNoTracking().FirstOrDefault(c => c.Id == id);
+    Cinema cinema = _context.Cinemas.FirstOrDefault(c => c.Id == id);
     if (cinema == null) return NotFound();
 
     var cinemaDto = _autoMapper.Map<ReadCinemaDTO>(cinema);
