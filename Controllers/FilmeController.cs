@@ -56,7 +56,6 @@ public class FilmeController : ControllerBase
     return _autoMapper
       .Map<List<ReadFilmeDTO>>(
         _context.Filmes
-          .AsNoTracking()
           .Skip(skip)
           .Take(take)
           .ToList()
@@ -69,7 +68,7 @@ public class FilmeController : ControllerBase
   [ProducesResponseType(StatusCodes.Status400BadRequest)]
   public IActionResult PegarFilme([FromRoute] int id)
   {
-    Filme filme = _context.Filmes.AsNoTracking().FirstOrDefault(f => f.Id == id);
+    Filme filme = _context.Filmes.FirstOrDefault(f => f.Id == id);
     var filmeDto = _autoMapper.Map<ReadFilmeDTO>(filme);
     return filme != null ? Ok(filmeDto) : NotFound();
   }
