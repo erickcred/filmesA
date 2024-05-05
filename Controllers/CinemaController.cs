@@ -46,11 +46,17 @@ public class CinemaController : ControllerBase
   [HttpGet]
   [ProducesResponseType(typeof(List<ReadCinemaDTO>), StatusCodes.Status200OK)]
   [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-  public IEnumerable<ReadCinemaDTO> RetornaCinemas()
+  public IEnumerable<ReadCinemaDTO> RetornaCinemas([FromQuery] int? enderecoId = null)
   {
+    if (enderecoId == null)
+    {
+      return _autoMapper.Map<List<ReadCinemaDTO>>(
+        _context.Cinemas.ToList()
+        );
+    }
     return _autoMapper.Map<List<ReadCinemaDTO>>(
-      _context.Cinemas.ToList()
-      );
+        _context.Cinemas.Where(c => c.EnderecoId == enderecoId).ToList()
+        );
   }
 
   [HttpGet("{id}")]

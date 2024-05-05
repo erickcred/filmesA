@@ -34,7 +34,8 @@ public class SessaoController : ControllerBase
       _context.Sessoes.Add(sessao);
       _context.SaveChanges();
       transaction.Commit();
-      return CreatedAtAction(nameof(RetornaSessao), new { id = sessao.Id }, sessao);
+      return CreatedAtAction(nameof(RetornaSessao), 
+        new { filmeId = sessao.FilmeId, cinemaId = sessao.CinemaId }, sessao);
     }
     catch (Exception ex)
     {
@@ -54,29 +55,29 @@ public class SessaoController : ControllerBase
     return _autoMapper.Map<List<ReadSessaoDTO>>(sessao);
   }
 
-  [HttpGet("{id}")]
+  [HttpGet("{filmeId}/{cinemaId}")]
   [ProducesResponseType(typeof(ReadSessaoDTO), StatusCodes.Status200OK)]
   [ProducesResponseType(StatusCodes.Status404NotFound)]
   [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-  public IActionResult RetornaSessao([FromRoute] int id)
+  public IActionResult RetornaSessao([FromRoute] int filmeId, [FromRoute] int cinemaId)
   {
-    Sessao sessao = _context.Sessoes.FirstOrDefault(s => s.Id == id);
+    Sessao sessao = _context.Sessoes.FirstOrDefault(s => s.FilmeId == filmeId && s.CinemaId == cinemaId);
     if (sessao == null) return NotFound();
 
     var sessaoDto = _autoMapper.Map<ReadSessaoDTO>(sessao);
     return Ok(sessaoDto);
   }
 
-  [HttpPut("{id}")]
+  [HttpPut("{filmeId}/{cinemaId}")]
   [ProducesResponseType(typeof(ReadCinemaDTO), StatusCodes.Status200OK)]
   [ProducesResponseType(StatusCodes.Status404NotFound)]
   [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-  public IActionResult AtualizarSessao([FromRoute] int id, [FromBody] UpdateSessaoDTO sessaoDto)
+  public IActionResult AtualizarSessao([FromRoute] int filmeId, [FromRoute] int cinemaId, [FromBody] UpdateSessaoDTO sessaoDto)
   {
     var transaction = _context.Database.BeginTransaction();
     try
     {
-      Sessao sessao = _context.Sessoes.FirstOrDefault(s => s.Id == id);
+      Sessao sessao = _context.Sessoes.FirstOrDefault(s => s.FilmeId == filmeId && s.CinemaId == cinemaId);
       if (sessao == null) return NotFound();
 
       _autoMapper.Map(sessao, sessaoDto);
@@ -93,16 +94,16 @@ public class SessaoController : ControllerBase
     }
   }
 
-  [HttpPatch("{id}")]
+  [HttpPatch("{filmeId}/{cinemaId}")]
   [ProducesResponseType(typeof(ReadCinemaDTO), StatusCodes.Status200OK)]
   [ProducesResponseType(StatusCodes.Status404NotFound)]
   [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-  public IActionResult AtualizarSessaoParcial([FromRoute] int id, JsonPatchDocument<UpdateSessaoDTO> path)
+  public IActionResult AtualizarSessaoParcial([FromRoute] int filmeId, [FromRoute] int cinemaId, JsonPatchDocument<UpdateSessaoDTO> path)
   {
     var transaction = _context.Database.BeginTransaction();
     try
     {
-      Sessao sessao = _context.Sessoes.FirstOrDefault(s => s.Id == id);
+      Sessao sessao = _context.Sessoes.FirstOrDefault(s => s.FilmeId == filmeId && s.CinemaId == cinemaId);
       if (sessao == null) return NotFound();
 
       var sessaoParaAtualizar = _autoMapper.Map<UpdateSessaoDTO>(sessao);
@@ -123,16 +124,16 @@ public class SessaoController : ControllerBase
     }
   }
 
-  [HttpDelete("{id}")]
+  [HttpDelete("{filmeId}/{cinemaId}")]
   [ProducesResponseType(typeof(ReadCinemaDTO), StatusCodes.Status200OK)]
   [ProducesResponseType(StatusCodes.Status404NotFound)]
   [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-  public IActionResult DeletarSessao([FromRoute] int id)
+  public IActionResult DeletarSessao([FromRoute] int filmeId, [FromRoute] int cinemaId)
   {
     var transaction = _context.Database.BeginTransaction();
     try
     {
-      Sessao sessao = _context.Sessoes.FirstOrDefault(s => s.Id == id);
+      Sessao sessao = _context.Sessoes.FirstOrDefault(s => s.FilmeId == filmeId && s.CinemaId == cinemaId);
       if (sessao == null) return NotFound();
 
       _context.Sessoes.Remove(sessao);

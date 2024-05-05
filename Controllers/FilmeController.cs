@@ -49,17 +49,31 @@ public class FilmeController : ControllerBase
     }
   }
 
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <param name="skip"></param>
+  /// <param name="take"></param>
+  /// <param name="nomeCinema">Busca filmes pelo nome do cinema</param>
+  /// <returns></returns>
   [HttpGet]
   [ProducesResponseType(typeof(Filme), StatusCodes.Status200OK)]
-  public IEnumerable<ReadFilmeDTO> PegarFilmes([FromQuery] int skip = 0, [FromQuery] int take = 50)
+  public IEnumerable<ReadFilmeDTO> PegarFilmes(
+    [FromQuery] int skip = 0,
+    [FromQuery] int take = 50,
+    [FromQuery] string? nomeCinema = null)
   {
+    if (nomeCinema == null)
+      return _autoMapper
+        .Map<List<ReadFilmeDTO>>(_context.Filmes.Skip(skip).Take(take).ToList());
+
     return _autoMapper
       .Map<List<ReadFilmeDTO>>(
-        _context.Filmes
-          .Skip(skip)
-          .Take(take)
-          .ToList()
-        );
+      _context.Filmes
+      .Skip(skip)
+      .Take(take)
+      .Where(f => f.Sessoes.Any(s => s.Cinema.Nome == nomeCinema))
+      .ToList());
   }
 
   [HttpGet("{id}")]
